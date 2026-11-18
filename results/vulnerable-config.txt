@@ -1,0 +1,12 @@
+nginx2root-check  (source: image:nginx2root-vulntest)
+nginx version:    1.31.8 (branch 1.31) -> vulnerable
+modules built:    http2=yes http3=yes mail=yes ssl_preread=yes
+features enabled: http2=yes http3/quic=no resolver=yes proxy_pass=yes mail_proxy=no ssl_preread=no
+attack paths:
+  CVE-2026-123007 HTTP/2 flow control      : YES
+  CVE-2026-123633 HTTP/2 use-after-free     : YES
+  CVE-2026-121810 HTTP/3 use-after-free     : no
+  CVE-2026-123634 resolver use-after-free   : likely (resolver in use; confirm per-request proxy_pass + mirror/SSI)
+  CVE-2026-113425 mail proxy use-after-free : no
+verdict:          Affected: a vulnerable version has at least one nginx2root feature enabled. Patch now.
+exit code:        1

@@ -1,0 +1,35 @@
+{
+    "tool": "nginx2root-check",
+    "source": "image:nginx2root-vulntest",
+    "version": "1.31.8",
+    "branch": "1.31",
+    "version_status": "vulnerable",
+    "modules": {
+        "http2": true,
+        "http3": true,
+        "mail": true,
+        "stream_ssl_preread": true
+    },
+    "enabled": {
+        "http2": true,
+        "http3_quic": false,
+        "resolver": true,
+        "variable_proxy_pass": true,
+        "mirror": true,
+        "proxy_pass": true,
+        "mail_proxy": false,
+        "ssl_preread": false,
+        "alias": false,
+        "try_files": false
+    },
+    "cves": {
+        "CVE-2026-123007": "YES",
+        "CVE-2026-123633": "YES",
+        "CVE-2026-121810": "no",
+        "CVE-2026-123634": "likely (resolver in use; confirm per-request proxy_pass + mirror/SSI)",
+        "CVE-2026-113425": "no"
+    },
+    "verdict": "Affected: a vulnerable version has at least one nginx2root feature enabled. Patch now.",
+    "exit_code": 1,
+    "notes": []
+}

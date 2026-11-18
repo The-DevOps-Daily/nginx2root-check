@@ -1,0 +1,56 @@
+nginx2root-check  (source: image:nginx:1.31.8)
+nginx version:    1.31.8 (branch 1.31) -> vulnerable
+modules built:    http2=yes http3=yes mail=yes ssl_preread=yes
+features enabled: http2=no http3/quic=no resolver=no proxy_pass=no mail_proxy=no ssl_preread=no
+attack paths:
+  CVE-2026-123007 HTTP/2 flow control      : no
+  CVE-2026-123633 HTTP/2 use-after-free     : no
+  CVE-2026-121810 HTTP/3 use-after-free     : no
+  CVE-2026-123634 resolver use-after-free   : no
+  CVE-2026-113425 mail proxy use-after-free : no
+verdict:          Vulnerable version, but none of the five attack-path features are enabled in the dumped config. Patch anyway; confirm the dump is the running config.
+exit code:        0
+
+nginx2root-check  (source: image:nginx:1.31.9)
+nginx version:    1.31.9 (branch 1.31) -> fixed
+modules built:    http2=yes http3=yes mail=yes ssl_preread=yes
+features enabled: http2=no http3/quic=no resolver=no proxy_pass=no mail_proxy=no ssl_preread=no
+attack paths:
+  CVE-2026-123007 HTTP/2 flow control      : no
+  CVE-2026-123633 HTTP/2 use-after-free     : no
+  CVE-2026-121810 HTTP/3 use-after-free     : no
+  CVE-2026-123634 resolver use-after-free   : no
+  CVE-2026-113425 mail proxy use-after-free : no
+verdict:          Patched build (1.31.9 / 1.30.7 or later). Confirm the running worker was restarted.
+notes:
+  - running binary must be replaced (restart or supported live upgrade); a config reload alone keeps the old executable.
+exit code:        2
+
+nginx2root-check  (source: image:nginx:1.30.6)
+nginx version:    1.30.6 (branch 1.30) -> vulnerable
+modules built:    http2=yes http3=yes mail=yes ssl_preread=yes
+features enabled: http2=no http3/quic=no resolver=no proxy_pass=no mail_proxy=no ssl_preread=no
+attack paths:
+  CVE-2026-123007 HTTP/2 flow control      : no
+  CVE-2026-123633 HTTP/2 use-after-free     : no
+  CVE-2026-121810 HTTP/3 use-after-free     : no
+  CVE-2026-123634 resolver use-after-free   : no
+  CVE-2026-113425 mail proxy use-after-free : no
+verdict:          Vulnerable version, but none of the five attack-path features are enabled in the dumped config. Patch anyway; confirm the dump is the running config.
+exit code:        0
+
+nginx2root-check  (source: image:nginx:1.30.7)
+nginx version:    1.30.7 (branch 1.30) -> fixed
+modules built:    http2=yes http3=yes mail=yes ssl_preread=yes
+features enabled: http2=no http3/quic=no resolver=no proxy_pass=no mail_proxy=no ssl_preread=no
+attack paths:
+  CVE-2026-123007 HTTP/2 flow control      : no
+  CVE-2026-123633 HTTP/2 use-after-free     : no
+  CVE-2026-121810 HTTP/3 use-after-free     : no
+  CVE-2026-123634 resolver use-after-free   : no
+  CVE-2026-113425 mail proxy use-after-free : no
+verdict:          Patched build (1.31.9 / 1.30.7 or later). Confirm the running worker was restarted.
+notes:
+  - running binary must be replaced (restart or supported live upgrade); a config reload alone keeps the old executable.
+exit code:        2
+

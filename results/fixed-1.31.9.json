@@ -1,0 +1,37 @@
+{
+    "tool": "nginx2root-check",
+    "source": "image:nginx:1.31.9",
+    "version": "1.31.9",
+    "branch": "1.31",
+    "version_status": "fixed",
+    "modules": {
+        "http2": true,
+        "http3": true,
+        "mail": true,
+        "stream_ssl_preread": true
+    },
+    "enabled": {
+        "http2": false,
+        "http3_quic": false,
+        "resolver": false,
+        "variable_proxy_pass": false,
+        "mirror": false,
+        "proxy_pass": false,
+        "mail_proxy": false,
+        "ssl_preread": false,
+        "alias": false,
+        "try_files": false
+    },
+    "cves": {
+        "CVE-2026-123007": "no",
+        "CVE-2026-123633": "no",
+        "CVE-2026-121810": "no",
+        "CVE-2026-123634": "no",
+        "CVE-2026-113425": "no"
+    },
+    "verdict": "Patched build (1.31.9 / 1.30.7 or later). Confirm the running worker was restarted.",
+    "exit_code": 2,
+    "notes": [
+        "running binary must be replaced (restart or supported live upgrade); a config reload alone keeps the old executable."
+    ]
+}
