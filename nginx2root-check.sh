@@ -130,12 +130,18 @@ printf '%s' "$cfg" | grep -Eq '^[[:space:]]*mail[[:space:]]*\{' \
 # A path is "exposed" only if the version is vulnerable AND the feature is on.
 vuln=0
 c123007="no"; c123633="no"; c121810="no"; c123634="no"; c113425="no"
-if [ "$version_status" = "vulnerable" ]; then
-	[ "$en_http2" = 1 ] && { c123007="YES"; vuln=1; }
-	[ "$en_http2" = 1 ] && [ "$en_proxypass" = 1 ] && { c123633="YES"; vuln=1; }
-	[ "$en_http3" = 1 ] && [ "$en_proxypass" = 1 ] && { c121810="YES"; vuln=1; }
-	[ "$en_resolver" = 1 ] && { c123634="likely (resolver in use; confirm per-request proxy_pass + mirror/SSI)"; vuln=1; }
-	[ "$en_mailproxy" = 1 ] && { c113425="YES"; vuln=1; }
+# Each CVE has its own first-affected version (nginx.org ranges). Only flag a
+# path when the version is in range for that specific CVE and not yet patched.
+if [ "$version_status" = "vulnerable" ] && [ -n "$version" ]; then
+	ver_ge "$version" 1.9.5  && [ "$en_http2" = 1 ] && { c123007="YES"; vuln=1; }
+	ver_ge "$version" 1.19.7 && [ "$en_http2" = 1 ] && [ "$en_proxypass" = 1 ] && { c123633="YES"; vuln=1; }
+	ver_ge "$version" 1.25.0 && [ "$en_http3" = 1 ] && [ "$en_proxypass" = 1 ] && { c121810="YES"; vuln=1; }
+	ver_ge "$version" 0.6.18 && [ "$en_resolver" = 1 ] && { c123634="likely (resolver in use; confirm per-request proxy_pass + mirror/SSI)"; vuln=1; }
+	ver_ge "$version" 0.5.33 && [ "$en_mailproxy" = 1 ] && { c113425="YES"; vuln=1; }
+elif [ "$version_status" = "pre-http2" ] && [ -n "$version" ]; then
+	# Older than 1.9.5: HTTP/2 CVEs do not apply, but resolver/mail can.
+	ver_ge "$version" 0.6.18 && [ "$en_resolver" = 1 ] && { c123634="likely (resolver in use; confirm per-request proxy_pass + mirror/SSI)"; vuln=1; }
+	ver_ge "$version" 0.5.33 && [ "$en_mailproxy" = 1 ] && { c113425="YES"; vuln=1; }
 fi
 # try_files + alias is the separate CVE-2026-125283 fixed in the same release
 if [ "$en_alias" = 1 ] && [ "$en_tryfiles" = 1 ]; then
@@ -146,7 +152,12 @@ fi
 verdict=""; code=3
 case "$version_status" in
 	fixed)      verdict="Patched build (1.31.9 / 1.30.7 or later). Confirm the running worker was restarted."; code=2 ;;
-	pre-http2)  verdict="Pre-HTTP/2 build: CVE-2026-123007 does not apply, but resolver and mail-proxy CVEs can. Upgrade."; code=3 ;;
+	pre-http2)
+		if [ "$vuln" = 1 ]; then
+			verdict="Pre-HTTP/2 build with a resolver or mail-proxy path enabled. Affected. Upgrade."; code=1
+		else
+			verdict="Pre-HTTP/2 build: CVE-2026-123007 does not apply, but this release is old. Upgrade."; code=3
+		fi ;;
 	vulnerable)
 		if [ "$vuln" = 1 ]; then
 			verdict="Affected: a vulnerable version has at least one nginx2root feature enabled. Patch now."; code=1

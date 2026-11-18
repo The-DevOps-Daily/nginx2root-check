@@ -26,8 +26,13 @@ The script reads three things and nothing else:
 
 From those it prints a version verdict (vulnerable / fixed) and which of the
 five attack-path features are actually enabled, then maps that to a per-CVE
-result. It never sends a request, never touches the network, and changes
-nothing. There is no exploit code here.
+result (each CVE gated on its own first-affected version). It never sends a
+request, never touches the network, and changes nothing. There is no exploit
+code here.
+
+This is heuristic triage, not proof. It reads directives across the whole
+config dump rather than per server block, and it cannot see a distro backport.
+Use it to find hosts that need a closer look, then confirm by hand.
 
 ## Usage
 
